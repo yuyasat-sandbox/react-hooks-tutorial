@@ -1,6 +1,8 @@
-import { useState, useEffect, useContext, useRef, useReducer, useMemo } from 'react';
+import { useState, useEffect, useContext, useRef, useReducer, useMemo, useCallback } from 'react';
 import './App.css';
 import ShinCodeContext from './main';
+import SomeChild from './SomeChild';
+import useLocalStorage from './useLocalStorage';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -34,7 +36,7 @@ function App() {
     console.log(ref.current.value)
   }
 
-  //useMemo メモ化できる。（ブラウザのメモリ上における）
+  //useMemo メモ化できる。（ブラウザのメモリ上における）値をメモ化する。
   const [count01, setCount01] = useState(0);
   const [count02, setCount02] = useState(0);
 
@@ -47,11 +49,24 @@ function App() {
   //}
   const square = useMemo(() => {
     let i = 0;
-    while (i < 800000000) {
+    while (i < 80000000) {
       i++;
     }
     return count02 * count02;
   }, [count02]);
+
+  //useCallback 関数をメモ化する。
+  const [counter, setCounter] = useState(0);
+  const showCount = () => {
+    alert('これは思い処理です。');
+  }
+  // const showCount = useCallback(() => {
+  //   alert('これは思い処理です。');
+  // }, [counter]);
+
+  // カスタムフック
+  const [age, setAge] = useLocalStorage("age", 24);
+
 
   return (
     <div className="App">
@@ -77,6 +92,13 @@ function App() {
       <div>結果：{square}</div>
       <button onClick={() => setCount01(count01 + 1)}>+</button>
       <button onClick={() => setCount02(count02 + 1)}>+</button>
+      <hr />
+      <h1>useCallback</h1>
+      <SomeChild showCount={showCount} />
+      <hr />
+      <h1>カスタムフック</h1>
+      <p>{age}</p>
+      <button onClick={() => { setAge(80) }}>年齢をセット</button>
     </div>
   )
 }
