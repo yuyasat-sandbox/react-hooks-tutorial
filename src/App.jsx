@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef, useReducer } from 'react';
+import { useState, useEffect, useContext, useRef, useReducer, useMemo } from 'react';
 import './App.css';
 import ShinCodeContext from './main';
 
@@ -34,6 +34,24 @@ function App() {
     console.log(ref.current.value)
   }
 
+  //useMemo メモ化できる。（ブラウザのメモリ上における）
+  const [count01, setCount01] = useState(0);
+  const [count02, setCount02] = useState(0);
+
+  //const square = () => {
+  //  let i = 0;
+  //  while (i < 200000000) {
+  //    i++;
+  //  }
+  //  return count02 * count02;
+  //}
+  const square = useMemo(() => {
+    let i = 0;
+    while (i < 800000000) {
+      i++;
+    }
+    return count02 * count02;
+  }, [count02]);
 
   return (
     <div className="App">
@@ -44,14 +62,21 @@ function App() {
       <h1>useContext</h1>
       <p>{shincodeInfo.name}</p>
       <p>{shincodeInfo.age}</p>
+      <hr />
       <h1>useRef</h1>
       <input type="text" ref={ref} />
       <button onClick={handleRef}>UseRef</button>
+      <hr />
       <h1>useReducer</h1>
       <p>カウント：{state}</p>
       <button onClick={() => dispatch({ type: "increment" })}>+</button>
       <button onClick={() => dispatch({ type: "decrement" })}>-</button>
-
+      <h1>useMemo</h1>
+      <div>カウント１：{count01}</div>
+      <div>カウント２：{count02}</div>
+      <div>結果：{square}</div>
+      <button onClick={() => setCount01(count01 + 1)}>+</button>
+      <button onClick={() => setCount02(count02 + 1)}>+</button>
     </div>
   )
 }
